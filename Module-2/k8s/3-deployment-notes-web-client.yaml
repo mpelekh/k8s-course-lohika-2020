@@ -28,6 +28,27 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 20
             failureThreshold: 3
+        - name: http-echo
+          image: hashicorp/http-echo
+          args:
+            - "-text=hello"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5678
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 5678
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 5678
   selector:
     matchLabels:
       app: notes-web-client
