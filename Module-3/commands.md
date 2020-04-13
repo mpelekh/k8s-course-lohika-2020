@@ -17,3 +17,9 @@ kubectl create secret generic [name] --from-file=[path to file]
 kubectl create secret generic [name] /
 					--from-literal=[key_1]=[value_1] /
 					--from-literal=[key_2]=[value_2]
+```
+
+## Physical storage
+```bash
+gcloud compute disks create --size=[size] --zone=[zone] [disk name] --project=[project name]
+```

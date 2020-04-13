@@ -10,11 +10,18 @@ spec:
       labels:
         app: mongo-db
     spec:
+      volumes:
+        - name: data-db
+          persistentVolumeClaim:
+            claimName: notes-app-pvc
       containers:
         - name: mongo-db
           image: mongo
           ports:
             - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: data-db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: notes-app-pv
+  namespace: notes-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  gcePersistentDisk:
+    fsType: ext4
+    pdName: k8s-course-data-disk
+  volumeMode: Filesystem
+  storageClassName: standard
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: notes-app-pvc
+  namespace: notes-app
+spec:
+  volumeName: notes-app-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
