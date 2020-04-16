@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: notes-app
+data:
+  mongoDbHost: mongo-db
+  mongoDbPort: '27017'
+  mongoDbName: notes
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: notes-app
+data:
+  port: '3000'
+  apiUrl: http://35.205.127.107

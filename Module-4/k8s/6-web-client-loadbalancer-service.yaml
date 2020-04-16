@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: notes-web-client-loadbalancer-service
+  namespace: notes-app
+spec:
+  selector:
+    app: notes-web-client
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8090
+  type: LoadBalancer
