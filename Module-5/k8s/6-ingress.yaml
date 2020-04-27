@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: notes-app-ingress
+  namespace: notes-app
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: notes-web-client
+              servicePort: 8090
+          - path: /notes
+            backend:
+              serviceName: notes-api
+              servicePort: 3000
+          - path: /notes/*
+            backend:
+              serviceName: notes-api
+              servicePort: 3000

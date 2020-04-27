@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-db
+  namespace: notes-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo-db
+    spec:
+      volumes:
+        - name: data-db
+          persistentVolumeClaim:
+            claimName: notes-app-pvc
+      containers:
+        - name: mongo-db
+          image: mongo
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: data-db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-secret
+                  key: password
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+  selector:
+    matchLabels:
+      app: mongo-db
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-db
+  namespace: notes-app
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: mongo-db

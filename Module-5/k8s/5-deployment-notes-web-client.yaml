@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-web-client
+  namespace: notes-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: notes-web-client
+    spec:
+      containers:
+        - name: notes-web-client
+          image: gcr.io/kubernetes-course-lohika-2020/notes-web-client:0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+          env:
+            - name: API_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: apiUrl
+          readinessProbe:
+            tcpSocket:
+              port: 8090
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            tcpSocket:
+              port: 8090
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+  selector:
+    matchLabels:
+      app: notes-web-client
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes-web-client
+  namespace: notes-app
+spec:
+  ports:
+  - port: 8090
+    protocol: TCP
+    targetPort: 8090
+  selector:
+    app: notes-web-client
+  type: NodePort
